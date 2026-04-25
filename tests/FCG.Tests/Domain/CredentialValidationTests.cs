@@ -8,6 +8,7 @@ public class CredentialValidationTests
     [Theory]
     [InlineData("a@b.co")]
     [InlineData("user@example.com")]
+    public void IsValidEmail_Aceita_formatos_comuns(string email) =>
         CredentialValidation.IsValidEmail(email).Should().BeTrue();
 
     [Theory]
@@ -18,7 +19,6 @@ public class CredentialValidationTests
         CredentialValidation.IsValidEmail(email).Should().BeFalse();
 
     [Fact]
-    public void IsValidEmail_Aceita_formatos_comuns(string email) =>
     public void IsStrongPassword_Aceita_senha_conforme_enunciado()
     {
         CredentialValidation.IsStrongPassword("Abc@1234", out var err).Should().BeTrue();
