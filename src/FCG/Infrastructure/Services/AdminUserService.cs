@@ -1,0 +1,37 @@
+using FCG.Application.Abstractions;
+using FCG.Application.Contracts;
+using FCG.Domain.Constants;
+using FCG.Infrastructure.Persistence;
+
+namespace FCG.Infrastructure.Services;
+
+public class AdminUserService : IAdminUserService
+{
+    private readonly IUsuarioRepository _usuarios;
+    private readonly AppDbContext _db;
+
+    public AdminUserService(IUsuarioRepository usuarios, AppDbContext db)
+    {
+        _usuarios = usuarios;
+        _db = db;
+    }
+
+    public async Task<IReadOnlyList<UserSummaryResponse>> ListUsersAsync(CancellationToken cancellationToken = default)
+    {
+        var usuarios = await _usuarios.ListAsync(cancellationToken);
+        return usuarios.Select(u => new UserSummaryResponse(u.Id, u.Name, u.Email, u.Role)).ToList();
+    }
+
+    public async Task UpdateRoleAsync(Guid userId, UpdateUserRoleRequest request, CancellationToken cancellationToken = default)
+    {
+        if (!Roles.IsValid(request.Role))
+            throw new InvalidOperationException("Perfil invalido. Use Usuario ou Administrador.");
+
+        var usuario = await _usuarios.GetByIdAsync(userId, cancellationToken);
+        if (usuario is null)
+            throw new KeyNotFoundException("Usuario nao encontrado.");
+
+        usuario.SetRole(request.Role);
+        await _db.SaveChangesAsync(cancellationToken);
+    }
+}

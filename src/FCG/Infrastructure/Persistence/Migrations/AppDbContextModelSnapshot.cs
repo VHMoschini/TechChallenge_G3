@@ -1,0 +1,73 @@
+using FCG.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+
+#nullable disable
+
+namespace FCG.Infrastructure.Persistence.Migrations;
+
+[DbContext(typeof(AppDbContext))]
+partial class AppDbContextModelSnapshot : ModelSnapshot
+{
+    protected override void BuildModel(ModelBuilder modelBuilder)
+    {
+#pragma warning disable 612, 618
+        modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+
+        modelBuilder.Entity("FCG.Domain.Entities.Jogo", b =>
+        {
+            b.Property<Guid>("Id").HasColumnType("TEXT");
+            b.Property<string>("Genre").IsRequired().HasMaxLength(100).HasColumnType("TEXT");
+            b.Property<decimal>("Price").HasPrecision(18, 2).HasColumnType("TEXT");
+            b.Property<string>("Title").IsRequired().HasMaxLength(300).HasColumnType("TEXT");
+            b.HasKey("Id");
+            b.ToTable("Games");
+        });
+
+        modelBuilder.Entity("FCG.Domain.Entities.Promocao", b =>
+        {
+            b.Property<Guid>("Id").HasColumnType("TEXT");
+            b.Property<string>("Description").HasMaxLength(2000).HasColumnType("TEXT");
+            b.Property<decimal>("DiscountPercent").HasPrecision(5, 2).HasColumnType("TEXT");
+            b.Property<Guid?>("GameId").HasColumnType("TEXT");
+            b.Property<string>("Title").IsRequired().HasMaxLength(200).HasColumnType("TEXT");
+            b.Property<DateTime>("ValidFromUtc").HasColumnType("TEXT");
+            b.Property<DateTime>("ValidToUtc").HasColumnType("TEXT");
+            b.HasKey("Id");
+            b.ToTable("Promotions");
+        });
+
+        modelBuilder.Entity("FCG.Domain.Entities.Usuario", b =>
+        {
+            b.Property<Guid>("Id").HasColumnType("TEXT");
+            b.Property<string>("Email").IsRequired().HasMaxLength(320).HasColumnType("TEXT");
+            b.Property<string>("Name").IsRequired().HasMaxLength(200).HasColumnType("TEXT");
+            b.Property<string>("PasswordHash").IsRequired().HasMaxLength(500).HasColumnType("TEXT");
+            b.Property<string>("Role").IsRequired().HasMaxLength(50).HasColumnType("TEXT");
+            b.HasKey("Id");
+            b.HasIndex("Email").IsUnique();
+            b.ToTable("Users");
+        });
+
+        modelBuilder.Entity("FCG.Domain.Entities.UsuarioJogo", b =>
+        {
+            b.Property<DateTime>("AcquiredAtUtc").HasColumnType("TEXT");
+            b.Property<Guid>("JogoId").HasColumnType("TEXT").HasColumnName("GameId");
+            b.Property<Guid>("UsuarioId").HasColumnType("TEXT").HasColumnName("UserId");
+            b.HasKey("UsuarioId", "JogoId");
+            b.HasIndex("JogoId");
+            b.ToTable("UserGames");
+            b.HasOne("FCG.Domain.Entities.Jogo", null)
+                .WithMany()
+                .HasForeignKey("JogoId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+            b.HasOne("FCG.Domain.Entities.Usuario", null)
+                .WithMany()
+                .HasForeignKey("UsuarioId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+        });
+#pragma warning restore 612, 618
+    }
+}
