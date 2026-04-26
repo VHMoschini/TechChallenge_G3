@@ -24,6 +24,7 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(320).HasColumnName("Email");
             entity.Property(e => e.SenhaHash).HasMaxLength(500).HasColumnName("SenhaHash");
             entity.Property(e => e.Perfil).HasMaxLength(50).HasColumnName("Perfil");
+            entity.Property(e => e.CredencialVersao).HasColumnName("CredencialVersao");
             entity.HasIndex(e => e.Email).IsUnique();
         });
 

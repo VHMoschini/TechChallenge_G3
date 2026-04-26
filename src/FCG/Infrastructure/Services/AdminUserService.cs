@@ -33,6 +33,7 @@ public class AdminUserService : IAdminUserService
             throw new KeyNotFoundException("Usuario nao encontrado.");
 
         usuario.DefinirPerfil(request.Role);
+        usuario.RotacionarCredencialJwt();
         await _db.SaveChangesAsync(cancellationToken);
     }
 
@@ -52,7 +53,11 @@ public class AdminUserService : IAdminUserService
         if (await _usuarios.EmailTakenByAnotherUserAsync(email, userId, cancellationToken))
             throw new InvalidOperationException("E-mail ja cadastrado.");
 
+        var emailMudou = usuario.Email != email;
         usuario.AtualizarDados(request.Name.Trim(), email);
+        if (emailMudou)
+            usuario.RotacionarCredencialJwt();
+
         await _db.SaveChangesAsync(cancellationToken);
 
         return new UserSummaryResponse(usuario.Id, usuario.Nome, usuario.Email, usuario.Perfil);

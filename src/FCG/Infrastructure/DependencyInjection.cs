@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using FCG.Application.Abstractions;
@@ -88,6 +89,49 @@ public static class DependencyInjection
                     ClockSkew = TimeSpan.FromMinutes(1),
                     NameClaimType = "name",
                     RoleClaimType = "role"
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = async context =>
+                    {
+                        if (context.Principal?.Identities.Any(i => i.IsAuthenticated) != true)
+                            return;
+
+                        var userIdStr = context.Principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+                        var credStr = context.Principal.FindFirst(JwtCustomClaims.CredencialVersao)?.Value;
+
+                        if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out var userId))
+                        {
+                            context.Fail("Token invalido.");
+                            return;
+                        }
+
+                        if (string.IsNullOrEmpty(credStr)
+                            || !int.TryParse(credStr, NumberStyles.Integer, CultureInfo.InvariantCulture, out var tokenVersao))
+                        {
+                            context.Fail("Token invalido. Faca login novamente.");
+                            return;
+                        }
+
+                        await using var scope = context.HttpContext.RequestServices.CreateAsyncScope();
+                        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                        var atual = await db.Usuarios.AsNoTracking()
+                            .Where(u => u.Id == userId)
+                            .Select(u => (int?)u.CredencialVersao)
+                            .FirstOrDefaultAsync(context.HttpContext.RequestAborted);
+
+                        if (atual is null)
+                        {
+                            context.Fail("Token invalido.");
+                            return;
+                        }
+
+                        if (atual.Value != tokenVersao)
+                        {
+                            context.Fail("Sessao expirada. Faca login novamente.");
+                            return;
+                        }
+                    }
                 };
             });
 

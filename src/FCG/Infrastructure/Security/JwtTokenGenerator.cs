@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -24,7 +25,8 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             new(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, usuario.Email),
             new("name", usuario.Nome),
-            new("role", usuario.Perfil)
+            new("role", usuario.Perfil),
+            new(JwtCustomClaims.CredencialVersao, usuario.CredencialVersao.ToString(CultureInfo.InvariantCulture))
         };
 
         var expires = GetExpiryUtc(utcNow);

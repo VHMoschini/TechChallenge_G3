@@ -33,7 +33,11 @@ public class UserProfileService : IUserProfileService
         if (await _usuarios.EmailTakenByAnotherUserAsync(email, userId, cancellationToken))
             throw new InvalidOperationException("E-mail ja cadastrado.");
 
+        var emailMudou = usuario.Email != email;
         usuario.AtualizarDados(request.Name.Trim(), email);
+        if (emailMudou)
+            usuario.RotacionarCredencialJwt();
+
         await _db.SaveChangesAsync(cancellationToken);
 
         return new UserSummaryResponse(usuario.Id, usuario.Nome, usuario.Email, usuario.Perfil);
@@ -58,6 +62,7 @@ public class UserProfileService : IUserProfileService
             throw new InvalidOperationException(pwdError!);
 
         usuario.DefinirSenhaHash(HashPassword(request.NewPassword));
+        usuario.RotacionarCredencialJwt();
         await _db.SaveChangesAsync(cancellationToken);
     }
 }

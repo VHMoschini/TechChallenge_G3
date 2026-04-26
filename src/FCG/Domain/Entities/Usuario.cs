@@ -9,6 +9,7 @@ public class Usuario
     public string Email { get; private set; } = string.Empty;
     public string SenhaHash { get; private set; } = string.Empty;
     public string Perfil { get; private set; } = Roles.Usuario;
+    public int CredencialVersao { get; private set; } = 1;
 
     private Usuario() { }
 
@@ -18,6 +19,7 @@ public class Usuario
         Email = email;
         SenhaHash = senhaHash;
         Perfil = perfil;
+        CredencialVersao = 1;
     }
 
     public void DefinirPerfil(string perfil)
@@ -42,5 +44,11 @@ public class Usuario
         if (string.IsNullOrWhiteSpace(senhaHash))
             throw new ArgumentException("Hash de senha invalido.", nameof(senhaHash));
         SenhaHash = senhaHash;
+    }
+
+    /// <summary>Incrementa a versao para invalidar JWTs emitidos antes desta rotacao.</summary>
+    public void RotacionarCredencialJwt()
+    {
+        CredencialVersao = CredencialVersao == int.MaxValue ? 1 : CredencialVersao + 1;
     }
 }
