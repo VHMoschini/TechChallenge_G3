@@ -1,26 +1,21 @@
 ================================================================================
 TECH CHALLENGE - FASE 1 - RELATORIO DE ENTREGA (FIAP)
 ================================================================================
-Preencha os campos abaixo e salve como PDF ou mantenha em TXT para upload,
-conforme orientacao do professor.
-
-Data da entrega: ____________________
-
 --------------------------------------------------------------------------------
 1. IDENTIFICACAO DO GRUPO
 --------------------------------------------------------------------------------
-Nome do grupo: ________________________________________________________________
+Nome do grupo: Grupo 56
 
 --------------------------------------------------------------------------------
 2. PARTICIPANTES E DISCORD
 --------------------------------------------------------------------------------
 (Preencha nome completo e username no Discord de cada integrante.)
 
-1) Nome: _____________________________  Discord: _____________________________
-2) Nome: _____________________________  Discord: _____________________________
-3) Nome: _____________________________  Discord: _____________________________
-4) Nome: _____________________________  Discord: _____________________________
-5) Nome: _____________________________  Discord: _____________________________
+1) Nome: Nicholas eduardo Moreira Cezar| Discord: nikolas8889
+2) Nome: Gabriel Lamas| Discord: Gabriel Lamas
+3) Nome: Leonardo Sales Discord: Leonardo| RM372507
+4) Nome: Victor Hugo| Discord: Victor Hugo
+5) Nome: Brenda Ferreira| Discord: Brenda Ferreira - RM371499
 
 --------------------------------------------------------------------------------
 3. LINKS OBRIGATORIOS
@@ -28,10 +23,10 @@ Nome do grupo: ________________________________________________________________
 
 Documentacao DDD (Miro ou equivalente):
   Se usou o repositorio: referencia ao arquivo docs/DDD_EventStorming_e_Diagramas.md
-  OU link do board Miro: _______________________________________________________
+  OU link do board Miro: https://miro.com/app/board/uXjVHcN8Upc=
 
-Repositorio do codigo (GitHub/GitLab/etc.):
-  _____________________________________________________________________________
+Repositorio do codigo (GitHub/GitLab/etc.): https://github.com/VHMoschini/TechChallenge_G3 
+
 
 Video de demonstracao (YouTube ou outro):
   _____________________________________________________________________________
