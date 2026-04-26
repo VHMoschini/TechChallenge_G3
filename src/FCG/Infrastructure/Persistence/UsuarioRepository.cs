@@ -20,7 +20,7 @@ public class UsuarioRepository : IUsuarioRepository
         _db.Usuarios.AnyAsync(u => u.Email == normalizedEmail, cancellationToken);
 
     public async Task<IReadOnlyList<Usuario>> ListAsync(CancellationToken cancellationToken = default) =>
-        await _db.Usuarios.AsNoTracking().OrderBy(u => u.Name).ToListAsync(cancellationToken);
+        await _db.Usuarios.AsNoTracking().OrderBy(u => u.Nome).ToListAsync(cancellationToken);
 
     public async Task AddAsync(Usuario usuario, CancellationToken cancellationToken = default)
     {

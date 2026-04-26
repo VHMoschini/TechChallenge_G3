@@ -7,19 +7,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace FCG.Controllers;
 
 [ApiController]
-[Route("api/admin/promotions")]
+[Route("api/admin/promocoes")]
 [Authorize(Roles = Roles.Administrador)]
-public class AdminPromotionsController : ControllerBase
+public class AdminPromocoesController : ControllerBase
 {
-    private readonly IPromotionService _promotions;
+    private readonly IPromocaoService _promocoes;
 
-    public AdminPromotionsController(IPromotionService promotions) => _promotions = promotions;
+    public AdminPromocoesController(IPromocaoService promocoes) => _promocoes = promocoes;
 
     [HttpPost]
-    [ProducesResponseType(typeof(PromotionResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PromotionResponse>> Create([FromBody] CreatePromotionRequest request, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(PromocaoResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<PromocaoResponse>> Create([FromBody] CreatePromocaoRequest request, CancellationToken cancellationToken)
     {
-        var p = await _promotions.CreateAsync(request, cancellationToken);
+        var p = await _promocoes.CreateAsync(request, cancellationToken);
         return Ok(p);
     }
 }

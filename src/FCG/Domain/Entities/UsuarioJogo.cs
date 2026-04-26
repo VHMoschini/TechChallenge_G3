@@ -4,7 +4,7 @@ public class UsuarioJogo
 {
     public Guid UsuarioId { get; private set; }
     public Guid JogoId { get; private set; }
-    public DateTime AcquiredAtUtc { get; private set; }
+    public DateTime AdquiridoEmUtc { get; private set; }
 
     private UsuarioJogo() { }
 
@@ -12,6 +12,6 @@ public class UsuarioJogo
     {
         UsuarioId = usuarioId;
         JogoId = jogoId;
-        AcquiredAtUtc = DateTime.UtcNow;
+        AdquiridoEmUtc = DateTime.UtcNow;
     }
 }

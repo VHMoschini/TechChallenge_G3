@@ -5,25 +5,25 @@ namespace FCG.Domain.Entities;
 public class Usuario
 {
     public Guid Id { get; private set; } = Guid.NewGuid();
-    public string Name { get; private set; } = string.Empty;
+    public string Nome { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
-    public string PasswordHash { get; private set; } = string.Empty;
-    public string Role { get; private set; } = Roles.Usuario;
+    public string SenhaHash { get; private set; } = string.Empty;
+    public string Perfil { get; private set; } = Roles.Usuario;
 
     private Usuario() { }
 
-    public Usuario(string name, string email, string passwordHash, string role = Roles.Usuario)
+    public Usuario(string nome, string email, string senhaHash, string perfil = Roles.Usuario)
     {
-        Name = name;
+        Nome = nome;
         Email = email;
-        PasswordHash = passwordHash;
-        Role = role;
+        SenhaHash = senhaHash;
+        Perfil = perfil;
     }
 
-    public void SetRole(string role)
+    public void DefinirPerfil(string perfil)
     {
-        if (!Roles.IsValid(role))
-            throw new ArgumentException("Perfil invalido.", nameof(role));
-        Role = role;
+        if (!Roles.IsValid(perfil))
+            throw new ArgumentException("Perfil invalido.", nameof(perfil));
+        Perfil = perfil;
     }
 }

@@ -6,25 +6,25 @@ public record LoginRequest(string Email, string Password);
 
 public record AuthResponse(string Token, DateTime ExpiresAtUtc, Guid UserId, string Name, string Email, string Role);
 
-public record CreateGameRequest(string Title, string Genre, decimal Price);
+public record CreateGameRequest(string Titulo, string Genero, decimal Preco);
 
-public record GameResponse(Guid Id, string Title, string Genre, decimal Price);
+public record GameResponse(Guid Id, string Titulo, string Genero, decimal Preco);
 
-public record CreatePromotionRequest(
-    string Title,
-    string? Description,
-    decimal DiscountPercent,
-    DateTime ValidFromUtc,
-    DateTime ValidToUtc,
+public record CreatePromocaoRequest(
+    string Titulo,
+    string? Descricao,
+    decimal PercentualDesconto,
+    DateTime DataPromoInicio,
+    DateTime DataPromoFim,
     Guid? GameId);
 
-public record PromotionResponse(
+public record PromocaoResponse(
     Guid Id,
-    string Title,
-    string? Description,
-    decimal DiscountPercent,
-    DateTime ValidFromUtc,
-    DateTime ValidToUtc,
+    string Titulo,
+    string? Descricao,
+    decimal PercentualDesconto,
+    DateTime DataPromoInicio,
+    DateTime DataPromoFim,
     Guid? GameId);
 
 public record UserSummaryResponse(Guid Id, string Name, string Email, string Role);

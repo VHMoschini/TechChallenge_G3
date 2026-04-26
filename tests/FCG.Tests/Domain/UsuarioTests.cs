@@ -10,6 +10,6 @@ public class UsuarioTests
     {
         var usuario = new Usuario("Alice", "alice@email.com", "hash");
 
-        usuario.Role.Should().Be("Usuario");
+        usuario.Perfil.Should().Be("Usuario");
     }
 }

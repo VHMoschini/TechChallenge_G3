@@ -3,16 +3,16 @@ namespace FCG.Domain.Entities;
 public class Jogo
 {
     public Guid Id { get; private set; } = Guid.NewGuid();
-    public string Title { get; private set; } = string.Empty;
-    public string Genre { get; private set; } = string.Empty;
-    public decimal Price { get; private set; }
+    public string Titulo { get; private set; } = string.Empty;
+    public string Genero { get; private set; } = string.Empty;
+    public decimal Preco { get; private set; }
 
     private Jogo() { }
 
-    public Jogo(string title, string genre, decimal price)
+    public Jogo(string titulo, string genero, decimal preco)
     {
-        Title = title;
-        Genre = genre;
-        Price = price;
+        Titulo = titulo;
+        Genero = genero;
+        Preco = preco;
     }
 }

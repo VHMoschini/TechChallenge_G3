@@ -18,41 +18,45 @@ public class AppDbContext : DbContext
     {
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.ToTable("Users");
+            entity.ToTable("Usuarios");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).HasMaxLength(200);
-            entity.Property(e => e.Email).HasMaxLength(320);
-            entity.Property(e => e.PasswordHash).HasMaxLength(500);
-            entity.Property(e => e.Role).HasMaxLength(50);
+            entity.Property(e => e.Nome).HasMaxLength(200).HasColumnName("Nome");
+            entity.Property(e => e.Email).HasMaxLength(320).HasColumnName("Email");
+            entity.Property(e => e.SenhaHash).HasMaxLength(500).HasColumnName("SenhaHash");
+            entity.Property(e => e.Perfil).HasMaxLength(50).HasColumnName("Perfil");
             entity.HasIndex(e => e.Email).IsUnique();
         });
 
         modelBuilder.Entity<Jogo>(entity =>
         {
-            entity.ToTable("Games");
+            entity.ToTable("Jogos");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Title).HasMaxLength(300);
-            entity.Property(e => e.Genre).HasMaxLength(100);
-            entity.Property(e => e.Price).HasPrecision(18, 2);
+            entity.Property(e => e.Titulo).HasMaxLength(300).HasColumnName("Titulo");
+            entity.Property(e => e.Genero).HasMaxLength(100).HasColumnName("Genero");
+            entity.Property(e => e.Preco).HasPrecision(18, 2).HasColumnName("Preco");
         });
 
         modelBuilder.Entity<UsuarioJogo>(entity =>
         {
-            entity.ToTable("UserGames");
+            entity.ToTable("UsuarioJogos");
             entity.HasKey(e => new { e.UsuarioId, e.JogoId });
-            entity.Property(e => e.UsuarioId).HasColumnName("UserId");
-            entity.Property(e => e.JogoId).HasColumnName("GameId");
+            entity.Property(e => e.UsuarioId).HasColumnName("UsuarioId");
+            entity.Property(e => e.JogoId).HasColumnName("JogoId");
+            entity.Property(e => e.AdquiridoEmUtc).HasColumnName("AdquiridoEmUtc");
             entity.HasOne<Usuario>().WithMany().HasForeignKey(e => e.UsuarioId).OnDelete(DeleteBehavior.Cascade);
             entity.HasOne<Jogo>().WithMany().HasForeignKey(e => e.JogoId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Promocao>(entity =>
         {
-            entity.ToTable("Promotions");
+            entity.ToTable("Promocoes");
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Title).HasMaxLength(200);
-            entity.Property(e => e.Description).HasMaxLength(2000);
-            entity.Property(e => e.DiscountPercent).HasPrecision(5, 2);
+            entity.Property(e => e.Titulo).HasMaxLength(200).HasColumnName("Titulo");
+            entity.Property(e => e.Descricao).HasMaxLength(2000).HasColumnName("Descricao");
+            entity.Property(e => e.PercentualDisconto).HasPrecision(5, 2).HasColumnName("PercentualDesconto");
+            entity.Property(e => e.DataPromoInicio).HasColumnName("ValidoDeUtc");
+            entity.Property(e => e.DataPromoFim).HasColumnName("ValidoAteUtc");
+            entity.Property(e => e.GameId).HasColumnName("JogoId");
         });
     }
 }

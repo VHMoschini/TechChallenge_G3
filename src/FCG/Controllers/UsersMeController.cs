@@ -13,9 +13,9 @@ namespace FCG.Controllers;
 [Authorize]
 public class UsersMeController : ControllerBase
 {
-    private readonly ILibraryService _library;
+    private readonly IBibliotecaService _biblioteca;
 
-    public UsersMeController(ILibraryService library) => _library = library;
+    public UsersMeController(IBibliotecaService biblioteca) => _biblioteca = biblioteca;
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -24,25 +24,27 @@ public class UsersMeController : ControllerBase
         var id = User.GetUserId();
         var name = User.Identity?.Name;
         var email = User.FindFirstValue(JwtRegisteredClaimNames.Email);
-        var role = User.FindFirstValue("role");
+        var role = User.FindFirstValue("role")
+            ?? User.FindFirstValue(ClaimTypes.Role)
+            ?? User.FindFirstValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
         return Ok(new { id, name, email, role });
     }
 
-    [HttpGet("library")]
+    [HttpGet("biblioteca")]
     [ProducesResponseType(typeof(IReadOnlyList<GameResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<GameResponse>>> GetLibrary(CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var list = await _library.GetMyLibraryAsync(userId, cancellationToken);
+        var list = await _biblioteca.GetMyLibraryAsync(userId, cancellationToken);
         return Ok(list);
     }
 
-    [HttpPost("library/games/{gameId:guid}")]
+    [HttpPost("biblioteca/games/{gameId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> AcquireGame(Guid gameId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        await _library.AcquireAsync(userId, gameId, cancellationToken);
+        await _biblioteca.AcquireAsync(userId, gameId, cancellationToken);
         return NoContent();
     }
 }

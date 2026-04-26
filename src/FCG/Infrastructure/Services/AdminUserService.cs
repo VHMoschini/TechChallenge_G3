@@ -19,7 +19,7 @@ public class AdminUserService : IAdminUserService
     public async Task<IReadOnlyList<UserSummaryResponse>> ListUsersAsync(CancellationToken cancellationToken = default)
     {
         var usuarios = await _usuarios.ListAsync(cancellationToken);
-        return usuarios.Select(u => new UserSummaryResponse(u.Id, u.Name, u.Email, u.Role)).ToList();
+        return usuarios.Select(u => new UserSummaryResponse(u.Id, u.Nome, u.Email, u.Perfil)).ToList();
     }
 
     public async Task UpdateRoleAsync(Guid userId, UpdateUserRoleRequest request, CancellationToken cancellationToken = default)
@@ -31,7 +31,7 @@ public class AdminUserService : IAdminUserService
         if (usuario is null)
             throw new KeyNotFoundException("Usuario nao encontrado.");
 
-        usuario.SetRole(request.Role);
+        usuario.DefinirPerfil(request.Role);
         await _db.SaveChangesAsync(cancellationToken);
     }
 }

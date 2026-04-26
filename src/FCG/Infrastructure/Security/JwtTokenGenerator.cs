@@ -23,8 +23,8 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         {
             new(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, usuario.Email),
-            new("name", usuario.Name),
-            new("role", usuario.Role)
+            new("name", usuario.Nome),
+            new("role", usuario.Perfil)
         };
 
         var expires = GetExpiryUtc(utcNow);

@@ -23,7 +23,7 @@ public class ExceptionHandlingMiddleware
         catch (Exception ex)
         {
             _logger.LogError(ex,
-                "Erro nao tratado: {ExceptionType} em {Path}",
+                "Erro nao tratado: {TipoExcecao} em {Caminho}",
                 ex.GetType().Name,
                 context.Request.Path);
             await WriteErrorAsync(context, ex);

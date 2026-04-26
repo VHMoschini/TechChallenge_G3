@@ -3,22 +3,22 @@ namespace FCG.Domain.Entities;
 public class Promocao
 {
     public Guid Id { get; private set; } = Guid.NewGuid();
-    public string Title { get; private set; } = string.Empty;
-    public string? Description { get; private set; }
-    public decimal DiscountPercent { get; private set; }
-    public DateTime ValidFromUtc { get; private set; }
-    public DateTime ValidToUtc { get; private set; }
+    public string Titulo { get; private set; } = string.Empty;
+    public string? Descricao { get; private set; }
+    public decimal PercentualDisconto { get; private set; }
+    public DateTime DataPromoInicio { get; private set; }
+    public DateTime DataPromoFim { get; private set; }
     public Guid? GameId { get; private set; }
 
     private Promocao() { }
 
-    public Promocao(string title, string? description, decimal discountPercent, DateTime validFromUtc, DateTime validToUtc, Guid? gameId = null)
+    public Promocao(string titulo, string? descricao, decimal percentualDisconto, DateTime dataPromoInicio, DateTime dataPromoFim, Guid? gameId = null)
     {
-        Title = title;
-        Description = description;
-        DiscountPercent = discountPercent;
-        ValidFromUtc = validFromUtc;
-        ValidToUtc = validToUtc;
+        Titulo = titulo;
+        Descricao = descricao;
+        PercentualDisconto = percentualDisconto;
+        DataPromoInicio = dataPromoInicio;
+        DataPromoFim = dataPromoFim;
         GameId = gameId;
     }
 }

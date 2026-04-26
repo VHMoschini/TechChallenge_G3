@@ -1,0 +1,37 @@
+TIPO;TEXTO_POSTIT;FLUXO
+EVENTO;UsuárioRegistrado;Cadastro
+COMANDO;RegistrarUsuario;Cadastro
+AGREGADO;Usuario;Cadastro
+ATOR;Visitante;Cadastro
+POLITICA;E-mail valido e unico, senha forte, hash BCrypt;Cadastro
+EVENTO;UsuarioAutenticado;Login
+COMANDO;AutenticarUsuario;Login
+EVENTO;TokenEmitido;Login
+AGREGADO;Usuario;Login
+ATOR;Visitante;Login
+POLITICA;BCrypt, usuario existente;Login
+EVENTO;JogoCadastradoNoCatalogo;Catalogo admin
+COMANDO;CadastrarJogo;Catalogo admin
+AGREGADO;Jogo;Catalogo admin
+ATOR;Administrador;Catalogo admin
+POLITICA;Role Admin, titulo obrigatorio, preco nao negativo;Catalogo admin
+EVENTO;JogoAdquirido;Biblioteca
+COMANDO;AdquirirJogoNaBiblioteca;Biblioteca
+AGREGADO;UsuarioJogo;Biblioteca
+ATOR;Usuario autenticado;Biblioteca
+POLITICA;Jogo existe, sem duplicata;Biblioteca
+EVENTO;PromocaoCriada;Promocoes
+COMANDO;CriarPromocao;Promocoes
+AGREGADO;Promocao;Promocoes
+ATOR;Administrador;Promocoes
+POLITICA;Desconto 0-100%, vigencia, GameId opcional;Promocoes
+EVENTO;PerfilDeUsuarioAlterado;Admin usuarios
+COMANDO;AlterarPerfilDeUsuario;Admin usuarios
+AGREGADO;Usuario;Admin usuarios
+ATOR;Administrador;Admin usuarios
+POLITICA;JWT Admin, role valida;Admin usuarios
+LEITURA;ListarJogos — GET /api/games;Consultas
+LEITURA;ListarPromocoesAtivas — GET /api/promotions;Consultas
+LEITURA;ConsultarMeuPerfil — GET /api/users/me;Consultas
+LEITURA;ListarMinhaBiblioteca — GET /api/users/me/library;Consultas
+LEITURA;ListarUsuarios — GET /api/admin/users;Consultas

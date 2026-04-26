@@ -41,7 +41,7 @@ public class AuthService : IAuthService
 
         var now = DateTime.UtcNow;
         var token = _jwt.CreateToken(usuario, now);
-        return new AuthResponse(token, _jwt.GetExpiryUtc(now), usuario.Id, usuario.Name, usuario.Email, usuario.Role);
+        return new AuthResponse(token, _jwt.GetExpiryUtc(now), usuario.Id, usuario.Nome, usuario.Email, usuario.Perfil);
     }
 
     public async Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
@@ -51,11 +51,11 @@ public class AuthService : IAuthService
         if (usuario is null)
             throw new UnauthorizedAccessException("Credenciais invalidas.");
 
-        if (!Verify(request.Password, usuario.PasswordHash))
+        if (!Verify(request.Password, usuario.SenhaHash))
             throw new UnauthorizedAccessException("Credenciais invalidas.");
 
         var now = DateTime.UtcNow;
         var token = _jwt.CreateToken(usuario, now);
-        return new AuthResponse(token, _jwt.GetExpiryUtc(now), usuario.Id, usuario.Name, usuario.Email, usuario.Role);
+        return new AuthResponse(token, _jwt.GetExpiryUtc(now), usuario.Id, usuario.Nome, usuario.Email, usuario.Perfil);
     }
 }

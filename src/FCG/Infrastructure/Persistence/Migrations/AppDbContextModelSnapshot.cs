@@ -17,46 +17,46 @@ partial class AppDbContextModelSnapshot : ModelSnapshot
         modelBuilder.Entity("FCG.Domain.Entities.Jogo", b =>
         {
             b.Property<Guid>("Id").HasColumnType("TEXT");
-            b.Property<string>("Genre").IsRequired().HasMaxLength(100).HasColumnType("TEXT");
-            b.Property<decimal>("Price").HasPrecision(18, 2).HasColumnType("TEXT");
-            b.Property<string>("Title").IsRequired().HasMaxLength(300).HasColumnType("TEXT");
+            b.Property<string>("Genre").IsRequired().HasMaxLength(100).HasColumnType("TEXT").HasColumnName("Genero");
+            b.Property<decimal>("Price").HasPrecision(18, 2).HasColumnType("TEXT").HasColumnName("Preco");
+            b.Property<string>("Title").IsRequired().HasMaxLength(300).HasColumnType("TEXT").HasColumnName("Titulo");
             b.HasKey("Id");
-            b.ToTable("Games");
+            b.ToTable("Jogos");
         });
 
         modelBuilder.Entity("FCG.Domain.Entities.Promocao", b =>
         {
             b.Property<Guid>("Id").HasColumnType("TEXT");
-            b.Property<string>("Description").HasMaxLength(2000).HasColumnType("TEXT");
-            b.Property<decimal>("DiscountPercent").HasPrecision(5, 2).HasColumnType("TEXT");
-            b.Property<Guid?>("GameId").HasColumnType("TEXT");
-            b.Property<string>("Title").IsRequired().HasMaxLength(200).HasColumnType("TEXT");
-            b.Property<DateTime>("ValidFromUtc").HasColumnType("TEXT");
-            b.Property<DateTime>("ValidToUtc").HasColumnType("TEXT");
+            b.Property<string>("Description").HasMaxLength(2000).HasColumnType("TEXT").HasColumnName("Descricao");
+            b.Property<decimal>("DiscountPercent").HasPrecision(5, 2).HasColumnType("TEXT").HasColumnName("PercentualDesconto");
+            b.Property<Guid?>("GameId").HasColumnType("TEXT").HasColumnName("JogoId");
+            b.Property<string>("Title").IsRequired().HasMaxLength(200).HasColumnType("TEXT").HasColumnName("Titulo");
+            b.Property<DateTime>("ValidFromUtc").HasColumnType("TEXT").HasColumnName("ValidoDeUtc");
+            b.Property<DateTime>("ValidToUtc").HasColumnType("TEXT").HasColumnName("ValidoAteUtc");
             b.HasKey("Id");
-            b.ToTable("Promotions");
+            b.ToTable("Promocoes");
         });
 
         modelBuilder.Entity("FCG.Domain.Entities.Usuario", b =>
         {
             b.Property<Guid>("Id").HasColumnType("TEXT");
             b.Property<string>("Email").IsRequired().HasMaxLength(320).HasColumnType("TEXT");
-            b.Property<string>("Name").IsRequired().HasMaxLength(200).HasColumnType("TEXT");
-            b.Property<string>("PasswordHash").IsRequired().HasMaxLength(500).HasColumnType("TEXT");
-            b.Property<string>("Role").IsRequired().HasMaxLength(50).HasColumnType("TEXT");
+            b.Property<string>("Name").IsRequired().HasMaxLength(200).HasColumnType("TEXT").HasColumnName("Nome");
+            b.Property<string>("PasswordHash").IsRequired().HasMaxLength(500).HasColumnType("TEXT").HasColumnName("SenhaHash");
+            b.Property<string>("Role").IsRequired().HasMaxLength(50).HasColumnType("TEXT").HasColumnName("Perfil");
             b.HasKey("Id");
             b.HasIndex("Email").IsUnique();
-            b.ToTable("Users");
+            b.ToTable("Usuarios");
         });
 
         modelBuilder.Entity("FCG.Domain.Entities.UsuarioJogo", b =>
         {
-            b.Property<DateTime>("AcquiredAtUtc").HasColumnType("TEXT");
-            b.Property<Guid>("JogoId").HasColumnType("TEXT").HasColumnName("GameId");
-            b.Property<Guid>("UsuarioId").HasColumnType("TEXT").HasColumnName("UserId");
+            b.Property<DateTime>("AcquiredAtUtc").HasColumnType("TEXT").HasColumnName("AdquiridoEmUtc");
+            b.Property<Guid>("JogoId").HasColumnType("TEXT").HasColumnName("JogoId");
+            b.Property<Guid>("UsuarioId").HasColumnType("TEXT").HasColumnName("UsuarioId");
             b.HasKey("UsuarioId", "JogoId");
             b.HasIndex("JogoId");
-            b.ToTable("UserGames");
+            b.ToTable("UsuarioJogos");
             b.HasOne("FCG.Domain.Entities.Jogo", null)
                 .WithMany()
                 .HasForeignKey("JogoId")

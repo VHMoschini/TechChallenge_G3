@@ -22,7 +22,7 @@ public static class DependencyInjection
         IHostEnvironment hostEnvironment)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' nao configurada.");
+            ?? throw new InvalidOperationException("String de conexao 'DefaultConnection' nao configurada.");
 
         connectionString = ResolveSqliteDataSourcePath(connectionString, hostEnvironment.ContentRootPath);
 
@@ -36,9 +36,9 @@ public static class DependencyInjection
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IGameService, GameService>();
-        services.AddScoped<ILibraryService, LibraryService>();
+        services.AddScoped<IBibliotecaService, BibliotecaService>();
         services.AddScoped<IAdminUserService, AdminUserService>();
-        services.AddScoped<IPromotionService, PromotionService>();
+        services.AddScoped<IPromocaoService, PromocaoService>();
         services.AddScoped<DevAdminSeeder>();
 
         return services;
@@ -63,16 +63,18 @@ public static class DependencyInjection
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var jwt = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>()
-            ?? throw new InvalidOperationException("Secao Jwt ausente em appsettings.");
+            ?? throw new InvalidOperationException("Secao Jwt ausente no appsettings.");
 
         if (string.IsNullOrWhiteSpace(jwt.Key) || jwt.Key.Length < 32)
             throw new InvalidOperationException("Jwt:Key deve ter pelo menos 32 caracteres.");
 
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+        JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
+                options.MapInboundClaims = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,

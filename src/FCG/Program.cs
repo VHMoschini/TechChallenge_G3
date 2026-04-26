@@ -5,8 +5,37 @@ using FCG.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, _, loggerConfiguration) =>
+{
+    loggerConfiguration
+        .ReadFrom.Configuration(context.Configuration)
+        .Enrich.FromLogContext()
+        .WriteTo.Console();
+
+    var newRelicEnabled = context.Configuration.GetValue<bool>("NewRelic:Enabled");
+    if (!newRelicEnabled)
+        return;
+
+    var endpointUrl = context.Configuration["NewRelic:LogsEndpointUrl"] ?? "https://log-api.newrelic.com/log/v1";
+    var applicationName = context.Configuration["NewRelic:ApplicationName"] ?? "FCG";
+    var licenseKey = context.Configuration["NewRelic:LicenseKey"] ?? string.Empty;
+    var insertKey = context.Configuration["NewRelic:InsertKey"] ?? string.Empty;
+
+    if (string.IsNullOrWhiteSpace(licenseKey) && string.IsNullOrWhiteSpace(insertKey))
+        return;
+
+    loggerConfiguration.WriteTo.NewRelicLogs(
+        endpointUrl: endpointUrl,
+        applicationName: applicationName,
+        licenseKey: licenseKey,
+        insertKey: insertKey,
+        restrictedToMinimumLevel: LogEventLevel.Information);
+});
 
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
 builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -57,14 +86,14 @@ await using (var scope = app.Services.CreateAsyncScope())
 
     await db.Database.MigrateAsync();
 
-    if (!await SqliteUsersTableExistsAsync(db))
+    if (!await SqliteTabelaUsuariosExisteAsync(db))
     {
         await db.Database.EnsureDeletedAsync();
         await db.Database.MigrateAsync();
 
-        if (!await SqliteUsersTableExistsAsync(db))
+        if (!await SqliteTabelaUsuariosExisteAsync(db))
             throw new InvalidOperationException(
-                "Nao foi possivel criar o esquema (tabela Users). Confirme que as migracoes EF estao no projeto e tente apagar o ficheiro fcg.db na pasta do projeto (ContentRoot).");
+                "Nao foi possivel criar o esquema (tabela Usuarios). Confirme que as migracoes EF estao no projeto e tente apagar o ficheiro fcg.db na pasta do projeto (ContentRoot).");
     }
 
     if (app.Environment.IsDevelopment())
@@ -77,9 +106,9 @@ app.MapGet("/health", [AllowAnonymous] () => Results.Ok(new { status = "ok" }));
 
 await app.RunAsync();
 
-static async Task<bool> SqliteUsersTableExistsAsync(AppDbContext db, CancellationToken cancellationToken = default)
+static async Task<bool> SqliteTabelaUsuariosExisteAsync(AppDbContext db, CancellationToken cancellationToken = default)
 {
-    const string sql = "SELECT 1 FROM sqlite_master WHERE type='table' AND name='Users' LIMIT 1;";
+    const string sql = "SELECT 1 FROM sqlite_master WHERE type='table' AND name='Usuarios' LIMIT 1;";
     await db.Database.OpenConnectionAsync(cancellationToken);
     try
     {

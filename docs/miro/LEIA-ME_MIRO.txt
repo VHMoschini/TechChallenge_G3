@@ -1,0 +1,43 @@
+FCG — Event Storming para colar no Miro
+========================================
+
+O Miro nao importa um arquivo .csv diretamente como "abrir board". Use um destes fluxos:
+
+1) Post-its a partir do Excel / LibreOffice (recomendado para cores por coluna)
+---------------------------------------------------------------------------
+a) Abra o arquivo: FCG_EventStorming_Miro_grade.csv
+   (no Excel BR, separador e ponto-e-virgula; se pedir origem dos dados, escolha Delimitado.)
+
+b) Selecione a tabela (com cabecalhos), copie (Ctrl+C).
+
+c) No Miro: clique no quadro, Ctrl+V e escolha "Colar como post-its" / "Paste as sticky notes".
+   Cada CELULA vira um post-it. Organize em linhas do fluxo ou arraste para swimlanes.
+
+d) Sugestao de cores (Event Storming classico):
+   - Coluna EVENTO: laranja
+   - Coluna COMANDO: azul claro
+   - Coluna AGREGADO: amarelo
+   - Coluna ATOR: amarelo ou rosa claro
+   - Coluna POLITICA_LEITURA: rosa / lilas
+
+   Selecione varios post-its da mesma coluna e altere a cor de uma vez.
+
+Documentacao oficial (colar de planilha):
+https://help.miro.com/hc/en-us/articles/360017572054-Sticky-notes
+
+
+2) Modo em massa (Bulk mode) — lista rapida
+---------------------------------------------------------------------------
+a) No Miro: menu de ferramentas > integracoes > pesquise "Bulk mode" (Modo em massa).
+
+b) Abra FCG_EventStorming_Miro_bulk_mode.txt, selecione tudo, copie.
+
+c) Cole no Bulk mode; cada linha vira um post-it. Depois agrupe e pinte manualmente.
+
+Limite de caracteres por post-it e quantidade: ver ajuda do Miro no momento do uso.
+
+
+3) Arquivo de uma coluna (colar so eventos, so comandos, etc.)
+---------------------------------------------------------------------------
+FCG_EventStorming_Miro_por_tipo.csv — filtre a coluna TIPO no Excel, copie a coluna TEXTO,
+cole no Miro como post-its.

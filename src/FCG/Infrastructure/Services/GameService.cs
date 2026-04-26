@@ -14,23 +14,23 @@ public class GameService : IGameService
 
     public async Task<GameResponse> CreateAsync(CreateGameRequest request, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(request.Title))
+        if (string.IsNullOrWhiteSpace(request.Titulo))
             throw new InvalidOperationException("Titulo e obrigatorio.");
-        if (request.Price < 0)
+        if (request.Preco < 0)
             throw new InvalidOperationException("Preco invalido.");
 
-        var genre = request.Genre?.Trim() ?? string.Empty;
-        var jogo = new Jogo(request.Title.Trim(), genre, request.Price);
+        var genero = request.Genero?.Trim() ?? string.Empty;
+        var jogo = new Jogo(request.Titulo.Trim(), genero, request.Preco);
         _db.Jogos.Add(jogo);
         await _db.SaveChangesAsync(cancellationToken);
-        return new GameResponse(jogo.Id, jogo.Title, jogo.Genre, jogo.Price);
+        return new GameResponse(jogo.Id, jogo.Titulo, jogo.Genero, jogo.Preco);
     }
 
     public async Task<IReadOnlyList<GameResponse>> ListAsync(CancellationToken cancellationToken = default)
     {
         var list = await _db.Jogos.AsNoTracking()
-            .OrderBy(g => g.Title)
-            .Select(g => new GameResponse(g.Id, g.Title, g.Genre, g.Price))
+            .OrderBy(g => g.Titulo)
+            .Select(g => new GameResponse(g.Id, g.Titulo, g.Genero, g.Preco))
             .ToListAsync(cancellationToken);
         return list;
     }
