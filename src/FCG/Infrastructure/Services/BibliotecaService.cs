@@ -28,6 +28,18 @@ public class BibliotecaService : IBibliotecaService
         await _db.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task RemoveAsync(Guid userId, Guid gameId, CancellationToken cancellationToken = default)
+    {
+        var link = await _db.UsuarioJogos.FirstOrDefaultAsync(
+            uj => uj.UsuarioId == userId && uj.JogoId == gameId,
+            cancellationToken);
+        if (link is null)
+            throw new InvalidOperationException("Jogo nao esta na sua biblioteca.");
+
+        _db.UsuarioJogos.Remove(link);
+        await _db.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyList<GameResponse>> GetMyLibraryAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var list = await _db.UsuarioJogos.AsNoTracking()

@@ -14,8 +14,13 @@ namespace FCG.Controllers;
 public class UsersMeController : ControllerBase
 {
     private readonly IBibliotecaService _biblioteca;
+    private readonly IUserProfileService _profile;
 
-    public UsersMeController(IBibliotecaService biblioteca) => _biblioteca = biblioteca;
+    public UsersMeController(IBibliotecaService biblioteca, IUserProfileService profile)
+    {
+        _biblioteca = biblioteca;
+        _profile = profile;
+    }
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -28,6 +33,24 @@ public class UsersMeController : ControllerBase
             ?? User.FindFirstValue(ClaimTypes.Role)
             ?? User.FindFirstValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
         return Ok(new { id, name, email, role });
+    }
+
+    [HttpPut]
+    [ProducesResponseType(typeof(UserSummaryResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<UserSummaryResponse>> UpdateProfile([FromBody] UpdateMyProfileRequest request, CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+        var updated = await _profile.UpdateMyProfileAsync(userId, request, cancellationToken);
+        return Ok(updated);
+    }
+
+    [HttpPut("password")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+        await _profile.ChangePasswordAsync(userId, request, cancellationToken);
+        return NoContent();
     }
 
     [HttpGet("biblioteca")]
@@ -45,6 +68,15 @@ public class UsersMeController : ControllerBase
     {
         var userId = User.GetUserId();
         await _biblioteca.AcquireAsync(userId, gameId, cancellationToken);
+        return NoContent();
+    }
+
+    [HttpDelete("biblioteca/games/{gameId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> RemoveGame(Guid gameId, CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+        await _biblioteca.RemoveAsync(userId, gameId, cancellationToken);
         return NoContent();
     }
 }

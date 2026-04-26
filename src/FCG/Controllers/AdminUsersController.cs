@@ -30,4 +30,12 @@ public class AdminUsersController : ControllerBase
         await _admin.UpdateRoleAsync(userId, request, cancellationToken);
         return NoContent();
     }
+
+    [HttpPut("{userId:guid}")]
+    [ProducesResponseType(typeof(UserSummaryResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<UserSummaryResponse>> UpdateUser(Guid userId, [FromBody] UpdateUserAdminRequest request, CancellationToken cancellationToken)
+    {
+        var user = await _admin.UpdateUserAsync(userId, request, cancellationToken);
+        return Ok(user);
+    }
 }

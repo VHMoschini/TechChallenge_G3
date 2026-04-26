@@ -5,6 +5,9 @@ using FCG.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Events;
 
@@ -39,6 +42,7 @@ builder.Host.UseSerilog((context, _, loggerConfiguration) =>
 
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
 builder.Services.AddJwtAuthentication(builder.Configuration);
+ConfigureOpenTelemetry(builder.Services, builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -105,6 +109,55 @@ app.MapControllers();
 app.MapGet("/health", [AllowAnonymous] () => Results.Ok(new { status = "ok" }));
 
 await app.RunAsync();
+
+static void ConfigureOpenTelemetry(IServiceCollection services, IConfiguration configuration)
+{
+    var enabled = configuration.GetValue<bool>("Observability:Enabled");
+    if (!enabled)
+        return;
+
+    var serviceName = configuration["Observability:ServiceName"] ?? "FCG";
+    var serviceVersion = configuration["Observability:ServiceVersion"] ?? "1.0.0";
+    var otlpEndpoint = configuration["Observability:OtlpEndpoint"] ?? string.Empty;
+    var otlpHeaders = configuration["Observability:OtlpHeaders"] ?? string.Empty;
+
+    services
+        .AddOpenTelemetry()
+        .ConfigureResource(resource => resource.AddService(serviceName: serviceName, serviceVersion: serviceVersion))
+        .WithTracing(tracing =>
+        {
+            tracing
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation();
+
+            if (!string.IsNullOrWhiteSpace(otlpEndpoint))
+            {
+                tracing.AddOtlpExporter(options =>
+                {
+                    options.Endpoint = new Uri(otlpEndpoint);
+                    if (!string.IsNullOrWhiteSpace(otlpHeaders))
+                        options.Headers = otlpHeaders;
+                });
+            }
+        })
+        .WithMetrics(metrics =>
+        {
+            metrics
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation();
+
+            if (!string.IsNullOrWhiteSpace(otlpEndpoint))
+            {
+                metrics.AddOtlpExporter(options =>
+                {
+                    options.Endpoint = new Uri(otlpEndpoint);
+                    if (!string.IsNullOrWhiteSpace(otlpHeaders))
+                        options.Headers = otlpHeaders;
+                });
+            }
+        });
+}
 
 static async Task<bool> SqliteTabelaUsuariosExisteAsync(AppDbContext db, CancellationToken cancellationToken = default)
 {

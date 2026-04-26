@@ -26,6 +26,17 @@ public class GameService : IGameService
         return new GameResponse(jogo.Id, jogo.Titulo, jogo.Genero, jogo.Preco);
     }
 
+    public async Task<GameResponse> UpdateAsync(Guid id, UpdateGameRequest request, CancellationToken cancellationToken = default)
+    {
+        var jogo = await _db.Jogos.FirstOrDefaultAsync(g => g.Id == id, cancellationToken);
+        if (jogo is null)
+            throw new KeyNotFoundException("Jogo nao encontrado.");
+
+        jogo.Atualizar(request.Titulo, request.Genero, request.Preco);
+        await _db.SaveChangesAsync(cancellationToken);
+        return new GameResponse(jogo.Id, jogo.Titulo, jogo.Genero, jogo.Preco);
+    }
+
     public async Task<IReadOnlyList<GameResponse>> ListAsync(CancellationToken cancellationToken = default)
     {
         var list = await _db.Jogos.AsNoTracking()

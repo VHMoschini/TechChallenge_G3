@@ -38,6 +38,7 @@ public static class DependencyInjection
         services.AddScoped<IGameService, GameService>();
         services.AddScoped<IBibliotecaService, BibliotecaService>();
         services.AddScoped<IAdminUserService, AdminUserService>();
+        services.AddScoped<IUserProfileService, UserProfileService>();
         services.AddScoped<IPromocaoService, PromocaoService>();
         services.AddScoped<DevAdminSeeder>();
 

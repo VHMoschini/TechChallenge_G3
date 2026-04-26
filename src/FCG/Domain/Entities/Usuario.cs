@@ -26,4 +26,21 @@ public class Usuario
             throw new ArgumentException("Perfil invalido.", nameof(perfil));
         Perfil = perfil;
     }
+
+    public void AtualizarDados(string nome, string emailNormalizado)
+    {
+        if (string.IsNullOrWhiteSpace(nome))
+            throw new ArgumentException("Nome invalido.", nameof(nome));
+        if (string.IsNullOrWhiteSpace(emailNormalizado))
+            throw new ArgumentException("E-mail invalido.", nameof(emailNormalizado));
+        Nome = nome.Trim();
+        Email = emailNormalizado;
+    }
+
+    public void DefinirSenhaHash(string senhaHash)
+    {
+        if (string.IsNullOrWhiteSpace(senhaHash))
+            throw new ArgumentException("Hash de senha invalido.", nameof(senhaHash));
+        SenhaHash = senhaHash;
+    }
 }

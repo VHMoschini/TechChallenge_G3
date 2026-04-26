@@ -23,6 +23,15 @@ public class GamesController : ControllerBase
         return Ok(game);
     }
 
+    [HttpPut("{id:guid}")]
+    [Authorize(Roles = Roles.Administrador)]
+    [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<GameResponse>> Update(Guid id, [FromBody] UpdateGameRequest request, CancellationToken cancellationToken)
+    {
+        var game = await _games.UpdateAsync(id, request, cancellationToken);
+        return Ok(game);
+    }
+
     [HttpGet]
     [AllowAnonymous]
     [ProducesResponseType(typeof(IReadOnlyList<GameResponse>), StatusCodes.Status200OK)]

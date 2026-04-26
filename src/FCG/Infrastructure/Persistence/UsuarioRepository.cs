@@ -19,6 +19,9 @@ public class UsuarioRepository : IUsuarioRepository
     public Task<bool> EmailExistsAsync(string normalizedEmail, CancellationToken cancellationToken = default) =>
         _db.Usuarios.AnyAsync(u => u.Email == normalizedEmail, cancellationToken);
 
+    public Task<bool> EmailTakenByAnotherUserAsync(string normalizedEmail, Guid userId, CancellationToken cancellationToken = default) =>
+        _db.Usuarios.AnyAsync(u => u.Email == normalizedEmail && u.Id != userId, cancellationToken);
+
     public async Task<IReadOnlyList<Usuario>> ListAsync(CancellationToken cancellationToken = default) =>
         await _db.Usuarios.AsNoTracking().OrderBy(u => u.Nome).ToListAsync(cancellationToken);
 

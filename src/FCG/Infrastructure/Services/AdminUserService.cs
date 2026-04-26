@@ -1,6 +1,7 @@
 using FCG.Application.Abstractions;
 using FCG.Application.Contracts;
 using FCG.Domain.Constants;
+using FCG.Domain.Services;
 using FCG.Infrastructure.Persistence;
 
 namespace FCG.Infrastructure.Services;
@@ -33,5 +34,27 @@ public class AdminUserService : IAdminUserService
 
         usuario.DefinirPerfil(request.Role);
         await _db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<UserSummaryResponse> UpdateUserAsync(Guid userId, UpdateUserAdminRequest request, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(request.Name))
+            throw new InvalidOperationException("Nome e obrigatorio.");
+
+        var email = request.Email.Trim().ToLowerInvariant();
+        if (!CredentialValidation.IsValidEmail(email))
+            throw new InvalidOperationException("E-mail invalido.");
+
+        var usuario = await _usuarios.GetByIdAsync(userId, cancellationToken);
+        if (usuario is null)
+            throw new KeyNotFoundException("Usuario nao encontrado.");
+
+        if (await _usuarios.EmailTakenByAnotherUserAsync(email, userId, cancellationToken))
+            throw new InvalidOperationException("E-mail ja cadastrado.");
+
+        usuario.AtualizarDados(request.Name.Trim(), email);
+        await _db.SaveChangesAsync(cancellationToken);
+
+        return new UserSummaryResponse(usuario.Id, usuario.Nome, usuario.Email, usuario.Perfil);
     }
 }

@@ -15,4 +15,15 @@ public class Jogo
         Genero = genero;
         Preco = preco;
     }
+
+    public void Atualizar(string titulo, string genero, decimal preco)
+    {
+        if (string.IsNullOrWhiteSpace(titulo))
+            throw new ArgumentException("Titulo invalido.", nameof(titulo));
+        if (preco < 0)
+            throw new ArgumentException("Preco invalido.", nameof(preco));
+        Titulo = titulo.Trim();
+        Genero = genero?.Trim() ?? string.Empty;
+        Preco = preco;
+    }
 }

@@ -32,6 +32,23 @@ git push -uf origin main
 2. **Jwt:Key** deve ter **pelo menos 32 caracteres**. Em produção use variável de ambiente ou cofre — **não** commite chaves reais.
 3. **Seed (somente Development)**: em `appsettings.Development.json`, `Seed` cria um administrador se o e-mail ainda não existir (senha deve obedecer a política de senha forte).
 
+## Observabilidade (New Relic)
+
+O projeto possui duas camadas de observabilidade:
+
+- **Logs** com Serilog + sink New Relic Logs.
+- **Traces e métricas** com OpenTelemetry (OTLP).
+
+### Configuração mínima em `appsettings.*.json`
+
+- `NewRelic:Enabled = true` para envio de logs.
+- `NewRelic:LicenseKey` **ou** `NewRelic:InsertKey`.
+- `Observability:Enabled = true`.
+- `Observability:OtlpEndpoint = https://otlp.nr-data.net:4317`.
+- `Observability:OtlpHeaders = api-key=<SUA_CHAVE_NEW_RELIC>`.
+
+> Recomendação: usar variáveis de ambiente para chaves e nunca commitar segredos.
+
 ## Executar
 
 ```bash

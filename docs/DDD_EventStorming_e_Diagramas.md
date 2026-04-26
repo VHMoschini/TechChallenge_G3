@@ -4,6 +4,19 @@ Este documento substitui ou complementa um board em **Miro** (equivalente aceito
 
 ---
 
+## Resumo do projeto (estilo apresentação)
+
+- **Plataforma FCG:** API REST em .NET 8 para autenticação, catálogo de jogos, promoções e biblioteca do usuário.
+- **Usuário:** Pode se cadastrar, fazer login, consultar o próprio perfil e gerenciar sua biblioteca.
+- **Administrador:** Pode cadastrar jogos, criar promoções e administrar usuários.
+- **Jogo:** Item de catálogo com título, gênero e preço.
+- **Biblioteca:** Relação de jogos adquiridos por cada usuário, sem permitir aquisição duplicada.
+- **Promoção:** Campanha com desconto percentual e período de vigência, opcionalmente vinculada a um jogo.
+- **Segurança:** JWT com autorização por perfil (`Usuario` e `Administrador`) e senha armazenada com hash BCrypt.
+- **Persistência e qualidade:** EF Core com migrations, middleware de erro com logs e testes automatizados das regras principais.
+
+---
+
 ## 1. Linguagem ubíqua (glossário)
 
 | Termo | Significado |

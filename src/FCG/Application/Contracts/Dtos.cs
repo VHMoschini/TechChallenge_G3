@@ -8,6 +8,8 @@ public record AuthResponse(string Token, DateTime ExpiresAtUtc, Guid UserId, str
 
 public record CreateGameRequest(string Titulo, string Genero, decimal Preco);
 
+public record UpdateGameRequest(string Titulo, string Genero, decimal Preco);
+
 public record GameResponse(Guid Id, string Titulo, string Genero, decimal Preco);
 
 public record CreatePromocaoRequest(
@@ -30,3 +32,9 @@ public record PromocaoResponse(
 public record UserSummaryResponse(Guid Id, string Name, string Email, string Role);
 
 public record UpdateUserRoleRequest(string Role);
+
+public record UpdateMyProfileRequest(string Name, string Email);
+
+public record ChangePasswordRequest(string CurrentPassword, string NewPassword, string ConfirmPassword);
+
+public record UpdateUserAdminRequest(string Name, string Email);
