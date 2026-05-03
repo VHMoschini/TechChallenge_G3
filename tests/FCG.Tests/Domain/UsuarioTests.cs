@@ -27,4 +27,21 @@ public class UsuarioTests
         usuario.RotacionarCredencialJwt();
         usuario.CredencialVersao.Should().Be(2);
     }
+
+    [Fact]
+    public void Novo_usuario_esta_ativo()
+    {
+        var usuario = new Usuario("Alice", "alice@email.com", "hash");
+        usuario.Ativo.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Inativar_desativa_e_rotaciona_credencial()
+    {
+        var usuario = new Usuario("Alice", "alice@email.com", "hash");
+        var v0 = usuario.CredencialVersao;
+        usuario.Inativar();
+        usuario.Ativo.Should().BeFalse();
+        usuario.CredencialVersao.Should().BeGreaterThan(v0);
+    }
 }

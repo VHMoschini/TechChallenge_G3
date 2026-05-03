@@ -25,7 +25,9 @@ public class AppDbContext : DbContext
             entity.Property(e => e.SenhaHash).HasMaxLength(500).HasColumnName("SenhaHash");
             entity.Property(e => e.Perfil).HasMaxLength(50).HasColumnName("Perfil");
             entity.Property(e => e.CredencialVersao).HasColumnName("CredencialVersao");
-            entity.HasIndex(e => e.Email).IsUnique();
+            entity.Property(e => e.Ativo).HasColumnName("Ativo");
+            entity.HasIndex(e => e.Email).IsUnique().HasFilter("\"Ativo\" = 1");
+            entity.HasQueryFilter(e => e.Ativo);
         });
 
         modelBuilder.Entity<Jogo>(entity =>
@@ -35,6 +37,8 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Titulo).HasMaxLength(300).HasColumnName("Titulo");
             entity.Property(e => e.Genero).HasMaxLength(100).HasColumnName("Genero");
             entity.Property(e => e.Preco).HasPrecision(18, 2).HasColumnName("Preco");
+            entity.Property(e => e.Ativo).HasColumnName("Ativo");
+            entity.HasQueryFilter(e => e.Ativo);
         });
 
         modelBuilder.Entity<UsuarioJogo>(entity =>

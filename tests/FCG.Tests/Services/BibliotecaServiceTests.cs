@@ -78,4 +78,41 @@ public class BibliotecaServiceTests
         var act = async () => await svc.AcquireAsync(userId, Guid.NewGuid());
         await act.Should().ThrowAsync<KeyNotFoundException>();
     }
+
+    [Fact]
+    public async Task GetMyLibrary_mantem_jogo_inativado_no_catalogo()
+    {
+        await using var db = await TestDatabase.CreateAsync();
+        var usuario = new Usuario("U", "u@test.com", "h");
+        db.Db.Usuarios.Add(usuario);
+        var jogo = new Jogo("G1", "Acao", 5m);
+        db.Db.Jogos.Add(jogo);
+        await db.Db.SaveChangesAsync();
+
+        var bib = new BibliotecaService(db.Db);
+        await bib.AcquireAsync(usuario.Id, jogo.Id);
+
+        var games = new GameService(db.Db);
+        await games.DeactivateAsync(jogo.Id);
+
+        var lib = await bib.GetMyLibraryAsync(usuario.Id);
+        lib.Should().HaveCount(1);
+        lib[0].Titulo.Should().Be("G1");
+    }
+
+    [Fact]
+    public async Task Acquire_jogo_inativado_no_catalogo_lanca_KeyNotFoundException()
+    {
+        await using var db = await TestDatabase.CreateAsync();
+        var usuario = new Usuario("U", "u@test.com", "h");
+        db.Db.Usuarios.Add(usuario);
+        var jogo = new Jogo("G1", "Acao", 5m);
+        db.Db.Jogos.Add(jogo);
+        await db.Db.SaveChangesAsync();
+        await new GameService(db.Db).DeactivateAsync(jogo.Id);
+
+        var svc = new BibliotecaService(db.Db);
+        var act = async () => await svc.AcquireAsync(usuario.Id, jogo.Id);
+        await act.Should().ThrowAsync<KeyNotFoundException>();
+    }
 }

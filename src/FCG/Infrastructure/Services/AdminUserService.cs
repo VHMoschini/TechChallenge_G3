@@ -3,6 +3,7 @@ using FCG.Application.Contracts;
 using FCG.Domain.Constants;
 using FCG.Domain.Services;
 using FCG.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace FCG.Infrastructure.Services;
 
@@ -61,5 +62,23 @@ public class AdminUserService : IAdminUserService
         await _db.SaveChangesAsync(cancellationToken);
 
         return new UserSummaryResponse(usuario.Id, usuario.Nome, usuario.Email, usuario.Perfil);
+    }
+
+    public async Task DeactivateUserAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var usuario = await _db.Usuarios.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        if (usuario is null)
+            throw new KeyNotFoundException("Usuario nao encontrado.");
+        usuario.Inativar();
+        await _db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task ReactivateUserAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var usuario = await _db.Usuarios.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        if (usuario is null)
+            throw new KeyNotFoundException("Usuario nao encontrado.");
+        usuario.Reativar();
+        await _db.SaveChangesAsync(cancellationToken);
     }
 }

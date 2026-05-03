@@ -6,6 +6,7 @@ public class Jogo
     public string Titulo { get; private set; } = string.Empty;
     public string Genero { get; private set; } = string.Empty;
     public decimal Preco { get; private set; }
+    public bool Ativo { get; private set; } = true;
 
     private Jogo() { }
 
@@ -14,7 +15,12 @@ public class Jogo
         Titulo = titulo;
         Genero = genero;
         Preco = preco;
+        Ativo = true;
     }
+
+    public void Inativar() => Ativo = false;
+
+    public void Reativar() => Ativo = true;
 
     public void Atualizar(string titulo, string genero, decimal preco)
     {

@@ -10,6 +10,7 @@ public class Usuario
     public string SenhaHash { get; private set; } = string.Empty;
     public string Perfil { get; private set; } = Roles.Usuario;
     public int CredencialVersao { get; private set; } = 1;
+    public bool Ativo { get; private set; } = true;
 
     private Usuario() { }
 
@@ -20,6 +21,19 @@ public class Usuario
         SenhaHash = senhaHash;
         Perfil = perfil;
         CredencialVersao = 1;
+        Ativo = true;
+    }
+
+    public void Inativar()
+    {
+        if (!Ativo) return;
+        Ativo = false;
+        RotacionarCredencialJwt();
+    }
+
+    public void Reativar()
+    {
+        Ativo = true;
     }
 
     public void DefinirPerfil(string perfil)

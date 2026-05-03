@@ -24,11 +24,11 @@ public class AdminUsersController : ControllerBase
     }
 
     [HttpPatch("{userId:guid}/role")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> UpdateRole(Guid userId, [FromBody] UpdateUserRoleRequest request, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(ApiMessageResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiMessageResponse>> UpdateRole(Guid userId, [FromBody] UpdateUserRoleRequest request, CancellationToken cancellationToken)
     {
         await _admin.UpdateRoleAsync(userId, request, cancellationToken);
-        return NoContent();
+        return Ok(new ApiMessageResponse("Perfil do usuario atualizado."));
     }
 
     [HttpPut("{userId:guid}")]
@@ -37,5 +37,21 @@ public class AdminUsersController : ControllerBase
     {
         var user = await _admin.UpdateUserAsync(userId, request, cancellationToken);
         return Ok(user);
+    }
+
+    [HttpDelete("{userId:guid}")]
+    [ProducesResponseType(typeof(ApiMessageResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiMessageResponse>> Deactivate(Guid userId, CancellationToken cancellationToken)
+    {
+        await _admin.DeactivateUserAsync(userId, cancellationToken);
+        return Ok(new ApiMessageResponse("Usuario inativado com sucesso."));
+    }
+
+    [HttpPost("{userId:guid}/reactivate")]
+    [ProducesResponseType(typeof(ApiMessageResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiMessageResponse>> Reactivate(Guid userId, CancellationToken cancellationToken)
+    {
+        await _admin.ReactivateUserAsync(userId, cancellationToken);
+        return Ok(new ApiMessageResponse("Usuario reativado com sucesso."));
     }
 }

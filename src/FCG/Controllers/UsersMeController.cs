@@ -45,12 +45,12 @@ public class UsersMeController : ControllerBase
     }
 
     [HttpPut("password")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(ApiMessageResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiMessageResponse>> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
         await _profile.ChangePasswordAsync(userId, request, cancellationToken);
-        return NoContent();
+        return Ok(new ApiMessageResponse("Senha alterada com sucesso."));
     }
 
     [HttpGet("biblioteca")]
@@ -63,20 +63,20 @@ public class UsersMeController : ControllerBase
     }
 
     [HttpPost("biblioteca/games/{gameId:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> AcquireGame(Guid gameId, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(ApiMessageResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiMessageResponse>> AcquireGame(Guid gameId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
         await _biblioteca.AcquireAsync(userId, gameId, cancellationToken);
-        return NoContent();
+        return Ok(new ApiMessageResponse("Jogo adquirido e adicionado à sua biblioteca."));
     }
 
     [HttpDelete("biblioteca/games/{gameId:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> RemoveGame(Guid gameId, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(ApiMessageResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiMessageResponse>> RemoveGame(Guid gameId, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
         await _biblioteca.RemoveAsync(userId, gameId, cancellationToken);
-        return NoContent();
+        return Ok(new ApiMessageResponse("Jogo removido da sua biblioteca."));
     }
 }

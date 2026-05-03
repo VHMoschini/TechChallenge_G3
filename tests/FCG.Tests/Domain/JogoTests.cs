@@ -38,4 +38,21 @@ public class JogoTests
         jogo.Atualizar("Z", null!, 2m);
         jogo.Genero.Should().BeEmpty();
     }
+
+    [Fact]
+    public void Novo_jogo_esta_ativo()
+    {
+        var jogo = new Jogo("X", "Y", 1m);
+        jogo.Ativo.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Inativar_e_Reativar_alteram_Ativo()
+    {
+        var jogo = new Jogo("X", "Y", 1m);
+        jogo.Inativar();
+        jogo.Ativo.Should().BeFalse();
+        jogo.Reativar();
+        jogo.Ativo.Should().BeTrue();
+    }
 }

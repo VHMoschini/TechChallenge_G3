@@ -35,4 +35,51 @@ public class GameServiceTests
         var act = async () => await svc.UpdateAsync(Guid.NewGuid(), new UpdateGameRequest("X", "Y", 1m));
         await act.Should().ThrowAsync<KeyNotFoundException>();
     }
+
+    [Fact]
+    public async Task ListAsync_nao_inclui_jogo_inativado()
+    {
+        await using var db = await TestDatabase.CreateAsync();
+        var ativo = new FCG.Domain.Entities.Jogo("A", "Acao", 1m);
+        var inativo = new FCG.Domain.Entities.Jogo("B", "RPG", 2m);
+        db.Db.Jogos.AddRange(ativo, inativo);
+        await db.Db.SaveChangesAsync();
+
+        var svc = new GameService(db.Db);
+        await svc.DeactivateAsync(inativo.Id);
+
+        var list = await svc.ListAsync();
+        list.Should().HaveCount(1);
+        list[0].Titulo.Should().Be("A");
+    }
+
+    [Fact]
+    public async Task UpdateAsync_jogo_inativado_lanca_KeyNotFoundException()
+    {
+        await using var db = await TestDatabase.CreateAsync();
+        var jogo = new FCG.Domain.Entities.Jogo("A", "Acao", 1m);
+        db.Db.Jogos.Add(jogo);
+        await db.Db.SaveChangesAsync();
+        var svc = new GameService(db.Db);
+        await svc.DeactivateAsync(jogo.Id);
+
+        var act = async () => await svc.UpdateAsync(jogo.Id, new UpdateGameRequest("X", "Y", 1m));
+        await act.Should().ThrowAsync<KeyNotFoundException>();
+    }
+
+    [Fact]
+    public async Task ReactivateAsync_volta_a_aparecer_em_List()
+    {
+        await using var db = await TestDatabase.CreateAsync();
+        var jogo = new FCG.Domain.Entities.Jogo("Z", "Acao", 1m);
+        db.Db.Jogos.Add(jogo);
+        await db.Db.SaveChangesAsync();
+        var svc = new GameService(db.Db);
+        await svc.DeactivateAsync(jogo.Id);
+        (await svc.ListAsync()).Should().BeEmpty();
+
+        await svc.ReactivateAsync(jogo.Id);
+
+        (await svc.ListAsync()).Should().ContainSingle(x => x.Titulo == "Z");
+    }
 }

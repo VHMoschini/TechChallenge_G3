@@ -40,4 +40,22 @@ public class GamesController : ControllerBase
         var list = await _games.ListAsync(cancellationToken);
         return Ok(list);
     }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = Roles.Administrador)]
+    [ProducesResponseType(typeof(ApiMessageResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiMessageResponse>> Deactivate(Guid id, CancellationToken cancellationToken)
+    {
+        await _games.DeactivateAsync(id, cancellationToken);
+        return Ok(new ApiMessageResponse("Jogo inativado com sucesso."));
+    }
+
+    [HttpPost("{id:guid}/reactivate")]
+    [Authorize(Roles = Roles.Administrador)]
+    [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<GameResponse>> Reactivate(Guid id, CancellationToken cancellationToken)
+    {
+        var game = await _games.ReactivateAsync(id, cancellationToken);
+        return Ok(game);
+    }
 }

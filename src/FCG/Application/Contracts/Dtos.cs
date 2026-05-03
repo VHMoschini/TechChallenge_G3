@@ -1,5 +1,8 @@
 namespace FCG.Application.Contracts;
 
+/// <summary>Resposta simples para operações sem payload (ex.: sucesso após POST/DELETE).</summary>
+public record ApiMessageResponse(string Message);
+
 public record RegisterRequest(string Name, string Email, string Password);
 
 public record LoginRequest(string Email, string Password);

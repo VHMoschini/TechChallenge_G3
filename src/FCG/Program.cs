@@ -88,14 +88,20 @@ await using (var scope = app.Services.CreateAsyncScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
+    if (await SqliteTabelaExisteAsync(db, "__EFMigrationsHistory")
+        && !await SqliteTabelaExisteAsync(db, "Usuarios"))
+    {
+        await db.Database.EnsureDeletedAsync();
+    }
+
     await db.Database.MigrateAsync();
 
-    if (!await SqliteTabelaUsuariosExisteAsync(db))
+    if (!await SqliteTabelaExisteAsync(db, "Usuarios"))
     {
         await db.Database.EnsureDeletedAsync();
         await db.Database.MigrateAsync();
 
-        if (!await SqliteTabelaUsuariosExisteAsync(db))
+        if (!await SqliteTabelaExisteAsync(db, "Usuarios"))
             throw new InvalidOperationException(
                 "Nao foi possivel criar o esquema (tabela Usuarios). Confirme que as migracoes EF estao no projeto e tente apagar o ficheiro fcg.db na pasta do projeto (ContentRoot).");
     }
@@ -159,14 +165,17 @@ static void ConfigureOpenTelemetry(IServiceCollection services, IConfiguration c
         });
 }
 
-static async Task<bool> SqliteTabelaUsuariosExisteAsync(AppDbContext db, CancellationToken cancellationToken = default)
+static async Task<bool> SqliteTabelaExisteAsync(AppDbContext db, string nomeTabela, CancellationToken cancellationToken = default)
 {
-    const string sql = "SELECT 1 FROM sqlite_master WHERE type='table' AND name='Usuarios' LIMIT 1;";
     await db.Database.OpenConnectionAsync(cancellationToken);
     try
     {
         await using var cmd = db.Database.GetDbConnection().CreateCommand();
-        cmd.CommandText = sql;
+        cmd.CommandText = "SELECT 1 FROM sqlite_master WHERE type='table' AND name=$nome LIMIT 1;";
+        var parametro = cmd.CreateParameter();
+        parametro.ParameterName = "$nome";
+        parametro.Value = nomeTabela;
+        cmd.Parameters.Add(parametro);
         var result = await cmd.ExecuteScalarAsync(cancellationToken);
         return result is not null && result is not DBNull;
     }

@@ -46,4 +46,20 @@ public class AdminUserServiceTests
         (await db.Db.Usuarios.AsNoTracking().FirstAsync(u => u.Id == userId)).Perfil.Should()
             .Be(FCG.Domain.Constants.Roles.Administrador);
     }
+
+    [Fact]
+    public async Task DeactivateUserAsync_marca_usuario_inativo()
+    {
+        await using var db = await TestDatabase.CreateAsync();
+        db.Db.Usuarios.Add(new Usuario("N", "n@x.com", "h"));
+        await db.Db.SaveChangesAsync();
+        var userId = (await db.Db.Usuarios.FirstAsync()).Id;
+
+        var repo = new UsuarioRepository(db.Db);
+        var admin = new AdminUserService(repo, db.Db);
+        await admin.DeactivateUserAsync(userId);
+
+        var row = await db.Db.Usuarios.IgnoreQueryFilters().AsNoTracking().FirstAsync(u => u.Id == userId);
+        row.Ativo.Should().BeFalse();
+    }
 }

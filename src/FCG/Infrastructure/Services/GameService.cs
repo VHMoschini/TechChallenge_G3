@@ -45,4 +45,23 @@ public class GameService : IGameService
             .ToListAsync(cancellationToken);
         return list;
     }
+
+    public async Task DeactivateAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var jogo = await _db.Jogos.IgnoreQueryFilters().FirstOrDefaultAsync(g => g.Id == id, cancellationToken);
+        if (jogo is null)
+            throw new KeyNotFoundException("Jogo nao encontrado.");
+        jogo.Inativar();
+        await _db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<GameResponse> ReactivateAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var jogo = await _db.Jogos.IgnoreQueryFilters().FirstOrDefaultAsync(g => g.Id == id, cancellationToken);
+        if (jogo is null)
+            throw new KeyNotFoundException("Jogo nao encontrado.");
+        jogo.Reativar();
+        await _db.SaveChangesAsync(cancellationToken);
+        return new GameResponse(jogo.Id, jogo.Titulo, jogo.Genero, jogo.Preco);
+    }
 }

@@ -44,7 +44,7 @@ public class BibliotecaService : IBibliotecaService
     {
         var list = await _db.UsuarioJogos.AsNoTracking()
             .Where(uj => uj.UsuarioId == userId)
-            .Join(_db.Jogos, uj => uj.JogoId, j => j.Id, (uj, j) => j)
+            .Join(_db.Jogos.IgnoreQueryFilters(), uj => uj.JogoId, j => j.Id, (uj, j) => j)
             .OrderBy(j => j.Titulo)
             .Select(j => new GameResponse(j.Id, j.Titulo, j.Genero, j.Preco))
             .ToListAsync(cancellationToken);
