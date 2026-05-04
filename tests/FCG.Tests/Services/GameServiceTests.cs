@@ -68,6 +68,63 @@ public class GameServiceTests
     }
 
     [Fact]
+    public async Task CreateAsync_persiste_jogo_e_retorna_response()
+    {
+        await using var db = await TestDatabase.CreateAsync();
+        var svc = new GameService(db.Db);
+
+        var res = await svc.CreateAsync(new CreateGameRequest("Doom", "Acao", 49.9m));
+
+        res.Id.Should().NotBeEmpty();
+        res.Titulo.Should().Be("Doom");
+        var fromDb = await db.Db.Jogos.AsNoTracking().FirstAsync();
+        fromDb.Titulo.Should().Be("Doom");
+        fromDb.Ativo.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task CreateAsync_titulo_em_branco_lanca()
+    {
+        await using var db = await TestDatabase.CreateAsync();
+        var svc = new GameService(db.Db);
+        var act = async () => await svc.CreateAsync(new CreateGameRequest(" ", "Acao", 1m));
+        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("*Titulo*");
+    }
+
+    [Fact]
+    public async Task CreateAsync_preco_negativo_lanca()
+    {
+        await using var db = await TestDatabase.CreateAsync();
+        var svc = new GameService(db.Db);
+        var act = async () => await svc.CreateAsync(new CreateGameRequest("X", "Y", -1m));
+        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("*Preco*");
+    }
+
+    [Fact]
+    public async Task DeactivateAsync_jogo_inexistente_lanca_KeyNotFoundException()
+    {
+        await using var db = await TestDatabase.CreateAsync();
+        var svc = new GameService(db.Db);
+        var act = async () => await svc.DeactivateAsync(Guid.NewGuid());
+        await act.Should().ThrowAsync<KeyNotFoundException>();
+    }
+
+    [Fact]
+    public async Task ListAsync_retorna_em_ordem_alfabetica_por_titulo()
+    {
+        await using var db = await TestDatabase.CreateAsync();
+        db.Db.Jogos.AddRange(
+            new FCG.Domain.Entities.Jogo("Zelda", "Aventura", 1m),
+            new FCG.Domain.Entities.Jogo("Mario", "Plataforma", 1m),
+            new FCG.Domain.Entities.Jogo("Counter", "FPS", 1m));
+        await db.Db.SaveChangesAsync();
+
+        var list = await new GameService(db.Db).ListAsync();
+
+        list.Select(g => g.Titulo).Should().ContainInOrder("Counter", "Mario", "Zelda");
+    }
+
+    [Fact]
     public async Task ReactivateAsync_volta_a_aparecer_em_List()
     {
         await using var db = await TestDatabase.CreateAsync();

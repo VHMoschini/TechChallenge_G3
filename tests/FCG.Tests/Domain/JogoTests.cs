@@ -55,4 +55,21 @@ public class JogoTests
         jogo.Reativar();
         jogo.Ativo.Should().BeTrue();
     }
+
+    [Fact]
+    public void Atualizar_remove_espacos_extra_do_titulo_e_genero()
+    {
+        var jogo = new Jogo("X", "Y", 1m);
+        jogo.Atualizar("  Doom  ", "  Acao  ", 49.90m);
+        jogo.Titulo.Should().Be("Doom");
+        jogo.Genero.Should().Be("Acao");
+    }
+
+    [Fact]
+    public void Atualizar_aceita_preco_zero()
+    {
+        var jogo = new Jogo("X", "Y", 1m);
+        jogo.Atualizar("X", "Y", 0m);
+        jogo.Preco.Should().Be(0m);
+    }
 }
