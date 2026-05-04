@@ -1,0 +1,27 @@
+================================================================================
+TECH CHALLENGE - FASE 1 - RELATORIO DE ENTREGA (FIAP)
+================================================================================
+--------------------------------------------------------------------------------
+1. IDENTIFICACAO DO GRUPO
+--------------------------------------------------------------------------------
+Nome do grupo: Grupo 56
+
+--------------------------------------------------------------------------------
+2. PARTICIPANTES E DISCORD
+--------------------------------------------------------------------------------
+
+1) Nome: Nicholas eduardo Moreira Cezar| Discord: nikolas8889
+2) Nome: Gabriel Lamas| Discord: Gabriel Lamas
+3) Nome: Leonardo Sales Discord: Leonardo| RM372507
+4) Nome: Victor Hugo| Discord: Victor Hugo
+5) Nome: Brenda Ferreira| Discord: Brenda Ferreira - RM371499
+
+--------------------------------------------------------------------------------
+3. LINKS OBRIGATORIOS
+--------------------------------------------------------------------------------
+
+Documentacao DDD: https://miro.com/app/board/uXjVHcN8Upc=
+
+Repositorio do codigo (GitHub): https://github.com/VHMoschini/TechChallenge_G3 
+
+Video de demonstracao (YouTube ou outro): https://youtu.be/bP5Wgrum7vE
